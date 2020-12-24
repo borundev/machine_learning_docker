@@ -1,0 +1,16 @@
+name: pytorch
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - scipy
+  - scikit-learn
+  - pandas
+  - wandb
+  - seaborn
+  - gym
+  - pyvirtualdisplay
+  - pip
+  - ipykernel
+  - ipywidgets
+

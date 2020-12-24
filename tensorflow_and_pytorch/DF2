@@ -1,0 +1,28 @@
+FROM tensorflow/tensorflow:latest-jupyter
+
+ARG NB_UID
+ARG NB_USER
+
+RUN echo $NB_USER
+RUN echo $NB_UID
+
+RUN useradd -m -s /bin/bash -u $NB_UID $NB_USER
+
+#RUN mkdir -p /opt/src
+#RUN chown -R $NB_USER /opt/src
+#RUN jupyter kernelspec remove -f python3
+
+USER $NB_USER
+ENV HOME=/home/$NB_USER
+
+WORKDIR $HOME
+
+#RUN echo `pwd`
+
+#WORKDIR /opt/src
+
+
+EXPOSE 8888
+
+
+

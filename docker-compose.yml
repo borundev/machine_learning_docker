@@ -1,0 +1,85 @@
+version: '2'
+
+services:
+
+  flask:
+    build: "flask"
+    container_name: flask
+    #ports:
+    #  - 5000:5000
+    expose:
+      - 5000
+    depends_on:
+      - redis
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/flask/
+      - traefik.frontend.auth.basic=user:$$apr1$$KJMFK5kl$$.60fyRnF.iA1hqOkAIn4U1
+
+  redis:
+      image: redis
+
+  tensorflow_and_pytorch:
+    build:
+      context: tensorflow_and_pytorch
+      # dockerfile: DF2
+      args:
+        NB_UID: ${NB_UID}
+        NB_USER: ${NB_USER}
+    container_name: tensorflow_and_pytorch
+    # ports:
+      # - 8888:8888
+    command: jupyter notebook --port=8888 --ip=0.0.0.0 --allow-root --NotebookApp.base_url='tensorflow_and_pytorch'
+    environment:
+      - JUPYTER_CONFIG_DIR=/opt/src
+    volumes:
+      - ${NOTEBOOKS_FOLDER}:/opt/src
+    labels:
+      - log.level=debug
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/tensorflow_and_pytorch/
+    depends_on:
+      - traefik
+
+  tensorboard:
+    build:
+      context: tensorflow_and_pytorch
+      #dockerfile: small_file_for_testing
+      args:
+        NB_UID: ${NB_UID}
+        NB_USER: ${NB_USER}
+    container_name: tensorboard
+    #ports:
+    #  - 6006:8888
+    command: tensorboard --logdir=runs --port=8888 --bind_all --path_prefix=/tensorboard/
+    volumes:
+      - ${NOTEBOOKS_FOLDER}:/opt/src
+    ipc: host
+    labels:
+      - log.level=debug
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/tensorboard/
+    depends_on:
+      - tensorflow_and_pytorch
+
+  traefik:
+    image: traefik:1.5.4
+    container_name: traefik
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    command: -d --web --web.address=:8080
+    volumes:
+      - ./traefik.toml:/etc/traefik/traefik.toml:ro
+      - ./acme:/etc/traefik/acme
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  whoami:
+    image: emilevauge/whoami #A container that exposes an API to show it's IP address
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:${HOSTNAME}
+    depends_on:
+      - traefik
