@@ -11,26 +11,11 @@ RUN pip install -U jupyter_nbextensions_configurator
 RUN pip install -U jupyter
 RUN pip install -U ipywidgets
 
-
-ARG NB_USER
-ARG NB_UID
-
-#RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER
-RUN useradd -m -s /bin/bash -u $NB_UID $NB_USER
-
-RUN mkdir -p /opt/src
-RUN chown -R $NB_USER /opt/src
 RUN jupyter kernelspec remove -f python3
 
-USER $NB_USER
-ENV HOME=/home/$NB_USER
-
-WORKDIR $HOME
-
-
 # enable jupyter extensions
-RUN jupyter contrib nbextension install --user
-RUN jupyter nbextensions_configurator enable --user
+RUN jupyter contrib nbextension install
+RUN jupyter nbextensions_configurator enable
 
 
 # turn on extensions
@@ -43,26 +28,34 @@ RUN jupyter nbextension enable --py widgetsnbextension
 
 COPY binder binder
 RUN pip install -U -r binder/requirements_tf.txt
-RUN python -m ipykernel install --user --display-name "Tensorflow"
+RUN python -m ipykernel install --display-name "Tensorflow"
 
 
 COPY Miniconda3-latest-Linux-x86_64.sh .
-RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda
-ENV PATH=$PATH:$HOME/miniconda/condabin
+RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda
+ENV PATH=$PATH:/miniconda/condabin
 
 RUN conda env create -f binder/environment_pytorch.yml
 SHELL ["conda","run","-n","pytorch","/bin/bash","-c"]
-RUN python -m ipykernel install --user --name pytorch --display-name "PyTorch"
+RUN python -m ipykernel install --name pytorch --display-name "PyTorch"
 RUN pip install -U -r binder/requirements_pytorch.txt
 
-USER root
 RUN rm -rf binder
 RUN rm Miniconda3-latest-Linux-x86_64.sh
-USER $NB_USER
 
 
-RUN conda init
+#RUN conda init
 #RUN echo "conda activate pytorch" >> ~/.bashrc
+
+ARG NB_USER
+ARG NB_UID
+
+RUN useradd -m -s /bin/bash -u $NB_UID $NB_USER
+
+RUN mkdir -p /opt/src
+RUN chown -R $NB_USER /opt/src
+USER $NB_USER
+ENV HOME=/home/$NB_USER
 
 WORKDIR /opt/src
 
