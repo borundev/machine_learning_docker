@@ -16,7 +16,7 @@ services:
       - traefik
 
   traefik:
-    image: traefik:1.5.4
+    image: library/traefik:1.7.18
     ports:
       - "80:80"
       - "443:443"
@@ -24,5 +24,4 @@ services:
     command: -d --web --web.address=:8080
     volumes:
       - ./traefik/traefik.toml:/etc/traefik/traefik.toml:ro
-      - ./traefik/acme:/etc/traefik/acme
       - /var/run/docker.sock:/var/run/docker.sock

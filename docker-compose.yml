@@ -69,7 +69,6 @@ services:
     container_name: tensorboard
     user: $NB_UID:$NB_GID
     working_dir: /home/${NB_USER}
-    stdin_open: true
     volumes:
       - ${NOTEBOOKS_FOLDER}:/home/${NB_USER}
       - /etc/group:/etc/group:ro
@@ -86,9 +85,10 @@ services:
       - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/tensorboard/
     depends_on:
       - tensorflow_and_pytorch
+      - traefik
 
   traefik:
-    image: traefik:1.5.4
+    image: traefik:1.7.18
     container_name: traefik
     ports:
       - "80:80"
@@ -97,7 +97,6 @@ services:
     command: -d --web --web.address=:8080
     volumes:
       - ./traefik/traefik.toml:/etc/traefik/traefik.toml:ro
-      - ./traefik/acme:/etc/traefik/acme
       - /var/run/docker.sock:/var/run/docker.sock
 
   whoami:
