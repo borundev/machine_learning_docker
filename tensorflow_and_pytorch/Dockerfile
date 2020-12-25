@@ -11,8 +11,6 @@ RUN pip install -U jupyter_nbextensions_configurator
 RUN pip install -U jupyter
 RUN pip install -U ipywidgets
 
-RUN jupyter kernelspec remove -f python3
-
 # enable jupyter extensions
 RUN jupyter contrib nbextension install
 RUN jupyter nbextensions_configurator enable
@@ -28,7 +26,12 @@ RUN jupyter nbextension enable --py widgetsnbextension
 
 COPY binder binder
 RUN pip install -U -r binder/requirements_tf.txt
-RUN python -m ipykernel install --display-name "Tensorflow"
+# name is redundant here but the point is that if we don't want a default "Python 3" named kernel
+# appear we cannot delete it as jupyter somehow just puts it back.
+# https://github.com/jupyterhub/jupyterhub/issues/2759
+# Instead we have to create a new one that is still called python3 internally but its display name
+# is Tensorflow
+RUN python -m ipykernel install --name python3 --display-name "Tensorflow"
 
 
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
