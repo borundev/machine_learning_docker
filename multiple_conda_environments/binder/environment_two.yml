@@ -1,0 +1,8 @@
+name: two
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - ipykernel
+
+
