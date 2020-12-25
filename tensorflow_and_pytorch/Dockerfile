@@ -40,26 +40,21 @@ SHELL ["conda","run","-n","pytorch","/bin/bash","-c"]
 RUN python -m ipykernel install --name pytorch --display-name "PyTorch"
 RUN pip install -U -r binder/requirements_pytorch.txt
 
+SHELL ["/bin/bash","-c"]
 RUN rm -rf binder
 RUN rm Miniconda3-latest-Linux-x86_64.sh
 
+ARG NB_USER=jupyter
+ARG NB_UID=1000
 
-#RUN conda init
-#RUN echo "conda activate pytorch" >> ~/.bashrc
+RUN useradd -m -s /bin/bash -u ${NB_UID} ${NB_USER}
 
-ARG NB_USER
-ARG NB_UID
+ENV HOME=/home/${NB_USER}
+USER ${NB_USER}
+WORKDIR ${HOME}
+RUN conda init
+RUN echo "conda activate pytorch" >> ~/.bashrc
 
-RUN useradd -m -s /bin/bash -u $NB_UID $NB_USER
-
-RUN mkdir -p /opt/src
-RUN chown -R $NB_USER /opt/src
-USER $NB_USER
-ENV HOME=/home/$NB_USER
-
-WORKDIR /opt/src
-
-EXPOSE 8888
 
 
 

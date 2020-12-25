@@ -24,23 +24,21 @@ services:
     build:
       context: tensorflow_and_pytorch
       # dockerfile: DF2
-      args:
-        NB_UID: ${NB_UID}
-        NB_USER: ${NB_USER}
     container_name: tensorflow_and_pytorch
     # ports:
       # - 8888:8888
-    user: $UID:$GID
-    working_dir: /opt/src
-    stdin_open: true
+    user: $NB_UID:$NB_GID
+    working_dir: /home/${NB_USER}
+    #stdin_open: true
     volumes:
-      - ${NOTEBOOKS_FOLDER}:/opt/src
+      - ${NOTEBOOKS_FOLDER}:/home/${NB_USER}
       - /etc/group:/etc/group:ro
       - /etc/passwd:/etc/passwd:ro
       - /etc/shadow:/etc/shadow:ro
     command: jupyter notebook --port=8888 --ip=0.0.0.0 --allow-root --NotebookApp.base_url='tensorflow_and_pytorch'
+    #tty: true
     environment:
-      - JUPYTER_CONFIG_DIR=/opt/src
+      - JUPYTER_CONFIG_DIR=/home/${NB_USER}
     labels:
       - log.level=debug
       - traefik.enable=true
@@ -52,15 +50,12 @@ services:
     build:
       context: tensorflow_and_pytorch
       #dockerfile: small_file_for_testing
-      args:
-        NB_UID: ${NB_UID}
-        NB_USER: ${NB_USER}
     container_name: tensorboard
-    user: $UID:$GID
-    working_dir: /opt/src
+    user: $NB_UID:$NB_GID
+    working_dir: /home/${NB_USER}
     stdin_open: true
     volumes:
-      - ${NOTEBOOKS_FOLDER}:/opt/src
+      - ${NOTEBOOKS_FOLDER}:/home/${NB_USER}
       - /etc/group:/etc/group:ro
       - /etc/passwd:/etc/passwd:ro
       - /etc/shadow:/etc/shadow:ro
