@@ -37,7 +37,7 @@ services:
       - /etc/group:/etc/group:ro
       - /etc/passwd:/etc/passwd:ro
       - /etc/shadow:/etc/shadow:ro
-    command: jupyter notebook --port=8888 --ip=0.0.0.0 --allow-root --NotebookApp.base_url='tensorflow_and_pytorch'
+    command: bash -c "conda init && echo 'conda activate pytorch' >> ~/.bashrc && jupyter notebook --port=8888 --ip=0.0.0.0 --allow-root --NotebookApp.base_url='tensorflow_and_pytorch'"
     #tty: true
     environment:
       - JUPYTER_CONFIG_DIR=/home/${NB_USER}
