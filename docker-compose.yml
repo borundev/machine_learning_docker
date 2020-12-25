@@ -6,6 +6,7 @@ services:
     build: "flask"
     container_name: flask
     #ports:
+    # Mapping ports should not be done if we do not want to expose the service to the internet
     #  - 5000:5000
     expose:
       - 5000
@@ -26,7 +27,8 @@ services:
       # dockerfile: DF2
     container_name: tensorflow_and_pytorch
     # ports:
-      # - 8888:8888
+    # Mapping ports should not be done if we do not want to expose the service to the internet
+    #   - 8888:8888
     user: $NB_UID:$NB_GID
     working_dir: /home/${NB_USER}
     #stdin_open: true
@@ -60,6 +62,7 @@ services:
       - /etc/passwd:/etc/passwd:ro
       - /etc/shadow:/etc/shadow:ro
     #ports:
+    # Mapping ports should not be done if we do not want to expose the service to the internet
     #  - 6006:8888
     command: tensorboard --logdir=runs --port=8888 --bind_all --path_prefix=/tensorboard/
     ipc: host
