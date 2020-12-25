@@ -31,7 +31,7 @@ RUN pip install -U -r binder/requirements_tf.txt
 RUN python -m ipykernel install --display-name "Tensorflow"
 
 
-COPY Miniconda3-latest-Linux-x86_64.sh .
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda
 ENV PATH=$PATH:/miniconda/condabin
 
@@ -43,18 +43,3 @@ RUN pip install -U -r binder/requirements_pytorch.txt
 SHELL ["/bin/bash","-c"]
 RUN rm -rf binder
 RUN rm Miniconda3-latest-Linux-x86_64.sh
-
-ARG NB_USER=jupyter
-ARG NB_UID=1000
-
-RUN useradd -m -s /bin/bash -u ${NB_UID} ${NB_USER}
-
-ENV HOME=/home/${NB_USER}
-USER ${NB_USER}
-WORKDIR ${HOME}
-RUN conda init
-RUN echo "conda activate pytorch" >> ~/.bashrc
-
-
-
-
