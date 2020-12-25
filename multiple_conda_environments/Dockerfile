@@ -5,22 +5,24 @@ RUN apt-get install -y wget
 
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda
-ENV PATH=$PATH:/miniconda/condabin:/miniconda/bin
+ENV PATH=$PATH:/miniconda/pcondabin:/miniconda/bin
 
-COPY binder binder
+COPY packages packages
 
-RUN conda env update -f binder/environment.yml
+RUN conda env update -f packages/environment.yml
 
-RUN conda env create -f binder/environment_one.yml
+RUN conda env create -f packages/environment_one.yml
 SHELL ["conda","run","-n","one","/bin/bash","-c"]
 RUN python -m ipykernel install --name kernel_one --display-name "Display Name One"
-RUN pip install -U -r binder/requirements_one.txt
+RUN pip install -U -r packages/requirements_one.txt
 
 
-RUN conda env create -f binder/environment_two.yml
+RUN conda env create -f packages/environment_two.yml
 SHELL ["conda","run","-n","two","/bin/bash","-c"]
 RUN python -m ipykernel install --name kernel_two --display-name "Display Name Two"
-RUN pip install -U -r binder/requirements_two.txt
+RUN pip install -U -r packages/requirements_two.txt
+RUN rm -rf packages
+RUN rm Miniconda3-latest-Linux-x86_64.sh
 
 ENV NB_USER feynman
 ENV NB_UID 1000

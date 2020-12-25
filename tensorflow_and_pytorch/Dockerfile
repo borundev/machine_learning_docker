@@ -24,8 +24,8 @@ RUN jupyter nbextension enable codefolding/main
 RUN jupyter nbextension enable scratchpad/main
 RUN jupyter nbextension enable --py widgetsnbextension
 
-COPY binder binder
-RUN pip install -U -r binder/requirements_tf.txt
+COPY packages packages
+RUN pip install -U -r packages/requirements_tf.txt
 # name is redundant here but the point is that if we don't want a default "Python 3" named kernel
 # appear we cannot delete it as jupyter somehow just puts it back.
 # https://github.com/jupyterhub/jupyterhub/issues/2759
@@ -38,11 +38,11 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda
 ENV PATH=$PATH:/miniconda/condabin
 
-RUN conda env create -f binder/environment_pytorch.yml
+RUN conda env create -f packages/environment_pytorch.yml
 SHELL ["conda","run","-n","pytorch","/bin/bash","-c"]
 RUN python -m ipykernel install --name pytorch --display-name "PyTorch"
-RUN pip install -U -r binder/requirements_pytorch.txt
+RUN pip install -U -r packages/requirements_pytorch.txt
 
 SHELL ["/bin/bash","-c"]
-RUN rm -rf binder
+RUN rm -rf packages
 RUN rm Miniconda3-latest-Linux-x86_64.sh
