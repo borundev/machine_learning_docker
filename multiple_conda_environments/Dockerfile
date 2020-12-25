@@ -36,5 +36,5 @@ RUN conda init
 RUN echo 'conda activate one' >> ~/.bashrc
 
 EXPOSE 8888
-COPY README.MD README.md
+COPY README.md README.md
 ENTRYPOINT ["jupyter", "notebook", "--no-browser","--ip=0.0.0.0","--NotebookApp.token=''","--NotebookApp.password=''"]

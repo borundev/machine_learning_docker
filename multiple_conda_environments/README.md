@@ -1,5 +1,7 @@
 # An example of making a dockerized jupyter server with multiple conda based kernels
 
+## Dockerfile
+
 In this example we:
 
 1. Start with Ubuntu
@@ -29,3 +31,14 @@ SHELL ["/bin/bash","-c"]
 RUN conda init
 RUN echo 'conda activate one' >> ~/.bashrc
 ```
+
+## Docker-Compose
+
+In the compose file we set up the service to run behind traefik. While this example only has one 
+service so a path prefix is not necessary but in general it will be so we add a path prefix via 
+command
+
+```dockerfile
+command: "--NotebookApp.base_url='multiple_conda_environments'"
+```
+
