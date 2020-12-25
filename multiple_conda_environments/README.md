@@ -18,10 +18,10 @@ ENV PATH=$PATH:/miniconda/condabin:/miniconda/bin
    bash shell which we cannot do here. This is thus handled in a different way by running 
    commands in the appropriate shells in the following manner
 ```dockerfile
-RUN conda env create -f binder/environment_one.yml
+RUN conda env create -f packages/environment_one.yml
 SHELL ["conda","run","-n","one","/bin/bash","-c"]
 RUN python -m ipykernel install --name kernel_one --display-name "Display Name One"
-RUN pip install -U -r binder/requirements_one.txt
+RUN pip install -U -r packages/requirements_one.txt
 ```
 5. Add a new user and switch to his directory
 6. Perform `conda init` as well as make it so that by default a new bash session opens in a one 
