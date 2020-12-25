@@ -1,0 +1,28 @@
+version: '2'
+
+services:
+
+  multiple_conda_environments:
+    build:
+      context: .
+    #ports:
+    #  - 8888:8888
+    command: "--NotebookApp.base_url='multiple_conda_environments'"
+    labels:
+      - log.level=debug
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/multiple_conda_environments/
+    depends_on:
+      - traefik
+
+  traefik:
+    image: traefik:1.5.4
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    command: -d --web --web.address=:8080
+    volumes:
+      - ./traefik/traefik.toml:/etc/traefik/traefik.toml:ro
+      - ./traefik/acme:/etc/traefik/acme
+      - /var/run/docker.sock:/var/run/docker.sock
