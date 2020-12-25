@@ -21,6 +21,20 @@ services:
   redis:
       image: redis
 
+  multiple_conda_environments:
+    build:
+      context: multiple_conda_environments
+    #ports:
+    #  - 8888:8888
+    container_name: multiple_conda_environments
+    command: "--NotebookApp.base_url='multiple_conda_environments'"
+    labels:
+      - log.level=debug
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/multiple_conda_environments/
+    depends_on:
+      - traefik
+
   tensorflow_and_pytorch:
     build:
       context: tensorflow_and_pytorch
@@ -37,7 +51,7 @@ services:
       - /etc/group:/etc/group:ro
       - /etc/passwd:/etc/passwd:ro
       - /etc/shadow:/etc/shadow:ro
-    command: bash -c "conda init && echo 'conda activate pytorch' >> ~/.bashrc && jupyter notebook --port=8888 --ip=0.0.0.0 --allow-root --NotebookApp.base_url='tensorflow_and_pytorch'"
+    command: bash -c "conda init && echo 'conda activate pytorch' >> ~/.bashrc && jupyter notebook --port=8888 --ip=0.0.0.0 --NotebookApp.base_url='tensorflow_and_pytorch'"
     #tty: true
     environment:
       - JUPYTER_CONFIG_DIR=/home/${NB_USER}
@@ -82,8 +96,8 @@ services:
       - "8080:8080"
     command: -d --web --web.address=:8080
     volumes:
-      - ./traefik.toml:/etc/traefik/traefik.toml:ro
-      - ./acme:/etc/traefik/acme
+      - ./traefik/traefik.toml:/etc/traefik/traefik.toml:ro
+      - ./traefik/acme:/etc/traefik/acme
       - /var/run/docker.sock:/var/run/docker.sock
 
   whoami:
