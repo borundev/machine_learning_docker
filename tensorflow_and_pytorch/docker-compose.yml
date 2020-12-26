@@ -2,42 +2,9 @@ version: '2'
 
 services:
 
-  flask:
-    build: "flask"
-    container_name: flask
-    #ports:
-    # Mapping ports should not be done if we do not want to expose the service to the internet
-    #  - 5000:5000
-    expose:
-      - 5000
-    depends_on:
-      - redis
-      - traefik
-    labels:
-      - traefik.enable=true
-      - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/flask/
-      - traefik.frontend.auth.basic=user:$$apr1$$KJMFK5kl$$.60fyRnF.iA1hqOkAIn4U1
-
-  redis:
-      image: redis
-
-  multiple_conda_environments:
-    build:
-      context: multiple_conda_environments
-    #ports:
-    #  - 8888:8888
-    container_name: multiple_conda_environments
-    command: "--NotebookApp.base_url='multiple_conda_environments'"
-    labels:
-      - log.level=debug
-      - traefik.enable=true
-      - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/multiple_conda_environments/
-    depends_on:
-      - traefik
-
   tensorflow_and_pytorch:
     build:
-      context: tensorflow_and_pytorch
+      context: .
     container_name: tensorflow_and_pytorch
     # ports:
     # Mapping ports should not be done if we do not want to expose the service to the internet
@@ -61,7 +28,7 @@ services:
 
   tensorboard:
     build:
-      context: tensorflow_and_pytorch
+      context: .
       #dockerfile: small_file_for_testing
     container_name: tensorboard
     user: $NB_UID:$NB_GID
@@ -85,8 +52,7 @@ services:
       - traefik
 
   traefik:
-    image: traefik:1.7.18
-    container_name: traefik
+    image: library/traefik:1.7.18
     ports:
       - "80:80"
       - "443:443"
@@ -95,11 +61,3 @@ services:
     volumes:
       - ./traefik/traefik.toml:/etc/traefik/traefik.toml:ro
       - /var/run/docker.sock:/var/run/docker.sock
-
-  whoami:
-    image: emilevauge/whoami #A container that exposes an API to show it's IP address
-    labels:
-      - traefik.enable=true
-      - traefik.frontend.rule=Host:${HOSTNAME}
-    depends_on:
-      - traefik

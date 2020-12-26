@@ -1,0 +1,469 @@
+################################################################
+# Global configuration
+################################################################
+
+# Timeout in seconds.
+# Duration to give active requests a chance to finish during hot-reloads
+#
+# Optional
+# Default: 10
+#
+# graceTimeOut = 10
+
+# Enable debug mode
+#
+# Optional
+# Default: false
+#
+# debug = true
+
+# Periodically check if a new version has been released
+#
+# Optional
+# Default: true
+#
+# checkNewVersion = false
+
+# Log level
+#
+# Optional
+# Default: "ERROR"
+#
+# logLevel = "ERROR"
+#logLevel = "DEBUG"
+
+# Backends throttle duration: minimum duration in seconds between 2 events from providers
+# before applying a new configuration. It avoids unnecessary reloads if multiples events
+# are sent in a short amount of time.
+#
+# Optional
+# Default: "2"
+#
+# ProvidersThrottleDuration = "5"
+
+# If non-zero, controls the maximum idle (keep-alive) to keep per-host.  If zero, DefaultMaxIdleConnsPerHost is used.
+# If you encounter 'too many open files' errors, you can either change this value, or change `ulimit` value.
+#
+# Optional
+# Default: http.DefaultMaxIdleConnsPerHost
+#
+# MaxIdleConnsPerHost = 200
+
+# If set to true invalid SSL certificates are accepted for backends.
+# Note: This disables detection of man-in-the-middle attacks so should only be used on secure backend networks.
+# Optional
+# Default: false
+#
+# InsecureSkipVerify = true
+
+# Entrypoints to be used by frontends that do not specify any entrypoint.
+# Each frontend can specify its own entrypoints.
+#
+# Optional
+# Default: ["http"]
+#
+defaultEntryPoints = ["http", "https"]
+
+# Constraints definition
+#
+# Optional
+#
+# Simple matching constraint
+# constraints = ["tag==api"]
+#
+# Simple mismatching constraint
+# constraints = ["tag!=api"]
+#
+# Globbing
+# constraints = ["tag==us-*"]
+#
+# Backend-specific constraint
+# [consulCatalog]
+#   endpoint = 127.0.0.1:8500
+#   constraints = ["tag==api"]
+#
+# Multiple constraints
+#   - "tag==" must match with at least one tag
+#   - "tag!=" must match with none of tags
+# constraints = ["tag!=us-*", "tag!=asia-*"]
+# [consulCatalog]
+#   endpoint = 127.0.0.1:8500
+#   constraints = ["tag==api", "tag!=v*-beta"]
+
+# Enable ACME (Let's Encrypt): automatic SSL
+#
+# Optional
+#
+# [acme]
+
+## Enable this section for automatic SSL generation
+##
+## [acme]
+## email = "info@domain.com"
+## storage = "/etc/traefik/acme/acme.json"
+## entryPoint = "https"
+## onDemand = true
+## OnHostRule = true
+## # comment this out for production CERTs (but beware of rate limiting)
+## caServer = "https://acme-staging.api.letsencrypt.org/directory"
+##
+## # this is because of https://github.com/containous/traefik/pull/2701 (sheer)
+## [acme.httpChallenge]
+## entryPoint = "http"
+
+
+
+# Email address used for registration
+#
+# Required
+#
+# email = "test@traefik.io"
+
+# File or key used for certificates storage.
+# WARNING, if you use Traefik in Docker, you have 2 options:
+#  - create a file on your host and mount it as a volume
+#      storageFile = "acme.json"
+#      $ docker run -v "/my/host/acme.json:acme.json" traefik
+#  - mount the folder containing the file as a volume
+#      storageFile = "/etc/traefik/acme/acme.json"
+#      $ docker run -v "/my/host/acme:/etc/traefik/acme" traefik
+#
+# Required
+#
+# storage = "acme.json" # or "traefik/acme/account" if using KV store
+
+# Entrypoint to proxy acme challenge/apply certificates to.
+# WARNING, must point to an entrypoint on port 443
+#
+# Required
+#
+# entryPoint = "https"
+
+# Use a DNS based acme challenge rather than external HTTPS access, e.g. for a firewalled server
+# Select the provider that matches the DNS domain that will host the challenge TXT record,
+# and provide environment variables with access keys to enable setting it:
+#  - cloudflare: CLOUDFLARE_EMAIL, CLOUDFLARE_API_KEY
+#  - digitalocean: DO_AUTH_TOKEN
+#  - dnsimple: DNSIMPLE_EMAIL, DNSIMPLE_API_KEY
+#  - dnsmadeeasy: DNSMADEEASY_API_KEY, DNSMADEEASY_API_SECRET
+#  - exoscale: EXOSCALE_API_KEY, EXOSCALE_API_SECRET
+#  - gandi: GANDI_API_KEY
+#  - linode: LINODE_API_KEY
+#  - manual: none, but run traefik interactively & turn on acmeLogging to see instructions & press Enter
+#  - namecheap: NAMECHEAP_API_USER, NAMECHEAP_API_KEY
+#  - rfc2136: RFC2136_TSIG_KEY, RFC2136_TSIG_SECRET, RFC2136_TSIG_ALGORITHM, RFC2136_NAMESERVER
+#  - route53: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, or configured user/instance IAM profile
+#  - dyn: DYN_CUSTOMER_NAME, DYN_USER_NAME, DYN_PASSWORD
+#  - vultr: VULTR_API_KEY
+#  - ovh: OVH_ENDPOINT, OVH_APPLICATION_KEY, OVH_APPLICATION_SECRET, OVH_CONSUMER_KEY
+#  - pdns: PDNS_API_KEY, PDNS_API_URL
+#
+# Optional
+#
+# dnsProvider = "digitalocean"
+
+# By default, the dnsProvider will verify the TXT DNS challenge record before letting ACME verify
+# If delayDontCheckDNS is greater than zero, avoid this & instead just wait so many seconds.
+# Useful if internal networks block external DNS queries
+#
+# Optional
+#
+# delayDontCheckDNS = 0
+
+# If true, display debug log messages from the acme client library
+#
+# Optional
+#
+# acmeLogging = true
+
+# Enable on demand certificate. This will request a certificate from Let's Encrypt during the first TLS handshake for a hostname that does not yet have a certificate.
+# WARNING, TLS handshakes will be slow when requesting a hostname certificate for the first time, this can leads to DoS attacks.
+# WARNING, Take note that Let's Encrypt have rate limiting: https://letsencrypt.org/docs/rate-limits
+#
+# Optional
+#
+# onDemand = true
+
+# Enable certificate generation on frontends Host rules. This will request a certificate from Let's Encrypt for each frontend with a Host rule.
+# For example, a rule Host:test1.traefik.io,test2.traefik.io will request a certificate with main domain test1.traefik.io and SAN test2.traefik.io.
+#
+# Optional
+#
+# OnHostRule = true
+
+# CA server to use
+# Uncomment the line to run on the staging let's encrypt server
+# Leave comment to go to prod
+#
+# Optional
+#
+#caServer = "https://acme-staging.api.letsencrypt.org/directory"
+
+# Domains list
+# You can provide SANs (alternative domains) to each main domain
+# All domains must have A/AAAA records pointing to Traefik
+# WARNING, Take note that Let's Encrypt have rate limiting: https://letsencrypt.org/docs/rate-limits
+# Each domain & SANs will lead to a certificate request.
+#
+# [[acme.domains]]
+#   main = "local1.com"
+#   sans = ["test1.local1.com", "test2.local1.com"]
+# [[acme.domains]]
+#   main = "local2.com"
+#   sans = ["test1.local2.com", "test2x.local2.com"]
+# [[acme.domains]]
+#   main = "local3.com"
+# [[acme.domains]]
+#   main = "local4.com"
+
+[entryPoints]
+  [entryPoints.http]
+    address = ":80"
+    [entryPoints.http.redirect]
+        entryPoint = "https"
+  [entryPoints.https]
+    address = ":443"
+    [entryPoints.https.tls]
+
+# Entrypoints definition
+#
+# Optional
+# Default:
+# [entryPoints]
+#   [entryPoints.http]
+#   address = ":80"
+#
+# To redirect an http entrypoint to an https entrypoint (with SNI support):
+# [entryPoints]
+#   [entryPoints.http]
+#   address = ":80"
+#     [entryPoints.http.redirect]
+#       entryPoint = "https"
+#   [entryPoints.https]
+#   address = ":443"
+#     [entryPoints.https.tls]
+#       [[entryPoints.https.tls.certificates]]
+#       CertFile = "integration/fixtures/https/snitest.com.cert"
+#       KeyFile = "integration/fixtures/https/snitest.com.key"
+#       [[entryPoints.https.tls.certificates]]
+#       CertFile = "integration/fixtures/https/snitest.org.cert"
+#       KeyFile = "integration/fixtures/https/snitest.org.key"
+#
+# To redirect an entrypoint rewriting the URL:
+# [entryPoints]
+#   [entryPoints.http]
+#   address = ":80"
+#     [entryPoints.http.redirect]
+#       regex = "^http://localhost/(.*)"
+#       replacement = "http://mydomain/$1"
+#
+# To enable basic auth on an entrypoint
+# with 2 user/pass: test:test and test2:test2
+# Passwords can be encoded in MD5, SHA1 and BCrypt: you can use htpasswd to generate those ones
+# Users can be specified directly in the toml file, or indirectly by referencing an external file; if both are provided, the two are merged, with external file contents having precedence
+# [entryPoints]
+#   [entryPoints.http]
+#   address = ":80"
+#   [entryPoints.http.auth.basic]
+#   users = ["test:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/", "test2:$apr1$d9hr9HBB$4HxwgUir3HP4EsggP/QNo0"]
+#   usersFile = "/path/to/.htpasswd"
+#
+# To enable digest auth on an entrypoint
+# with 2 user/realm/pass: test:traefik:test and test2:traefik:test2
+# You can use htdigest to generate those ones
+# Users can be specified directly in the toml file, or indirectly by referencing an external file; if both are provided, the two are merged, with external file contents having precedence
+# [entryPoints]
+#   [entryPoints.http]
+#   address = ":80"
+#   [entryPoints.http.auth.basic]
+#   users = ["test:traefik:a2688e031edb4be6a3797f3882655c05 ", "test2:traefik:518845800f9e2bfb1f1f740ec24f074e"]
+#   usersFile = "/path/to/.htdigest"
+#
+# To specify an https entrypoint with a minimum TLS version, and specifying an array of cipher suites (from crypto/tls):
+# [entryPoints]
+#   [entryPoints.https]
+#   address = ":443"
+#     [entryPoints.https.tls]
+#     MinVersion = "VersionTLS12"
+#     CipherSuites = ["TLS_RSA_WITH_AES_256_GCM_SHA384"]
+#       [[entryPoints.https.tls.certificates]]
+#       CertFile = "integration/fixtures/https/snitest.com.cert"
+#       KeyFile = "integration/fixtures/https/snitest.com.key"
+#       [[entryPoints.https.tls.certificates]]
+#       CertFile = "integration/fixtures/https/snitest.org.cert"
+#       KeyFile = "integration/fixtures/https/snitest.org.key"
+
+# To enable compression support using gzip format:
+# [entryPoints]
+#   [entryPoints.http]
+#   address = ":80"
+#   compress = true
+
+# To bind to a particular IP address only:
+# [entryPoints]
+#   [entryPoints.http]
+#   address = "10.42.13.37:80"
+
+# Enable retry sending request if network error
+#
+# Optional
+#
+# [retry]
+
+# Number of attempts
+#
+# Optional
+# Default: (number servers in backend) -1
+#
+# attempts = 3
+
+################################################################
+# Web configuration backend
+################################################################
+
+#[web]
+#address = ":8080"
+#ReadOnly = true
+
+# Enable web configuration backend
+#
+# Optional
+#
+# [web]
+
+# Web administration port
+#
+# Required
+#
+# address = ":8080"
+
+# SSL certificate and key used
+#
+# Optional
+#
+# CertFile = "traefik.crt"
+# KeyFile = "traefik.key"
+#
+# Set REST API to read-only mode
+#
+# Optional
+# ReadOnly = false
+#
+# Enable more detailed statistics
+# [web.statistics]
+#   RecentErrors = 10
+#
+# To enable Traefik to export internal metrics to Prometheus
+# [web.metrics.prometheus]
+#   Buckets=[0.1,0.3,1.2,5.0]
+#
+
+# To enable basic auth on the webui
+# with 2 user/pass: test:test and test2:test2
+# Passwords can be encoded in MD5, SHA1 and BCrypt: you can use htpasswd to generate those ones
+# Users can be specified directly in the toml file, or indirectly by referencing an external file; if both are provided, the two are merged, with external file contents having precedence
+#   [web.auth.basic]
+#     users = ["test:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/", "test2:$apr1$d9hr9HBB$4HxwgUir3HP4EsggP/QNo0"]
+#     usersFile = "/path/to/.htpasswd"
+# To enable digest auth on the webui
+# with 2 user/realm/pass: test:traefik:test and test2:traefik:test2
+# You can use htdigest to generate those ones
+# Users can be specified directly in the toml file, or indirectly by referencing an external file; if both are provided, the two are merged, with external file contents having precedence
+#   [web.auth.digest]
+#     users = ["test:traefik:a2688e031edb4be6a3797f3882655c05 ", "test2:traefik:518845800f9e2bfb1f1f740ec24f074e"]
+#     usersFile = "/path/to/.htdigest"
+
+
+
+################################################################
+# Docker configuration backend
+################################################################
+
+# Enable Docker configuration backend
+#
+# Optional
+#
+[docker]
+
+# Docker server endpoint. Can be a tcp or a unix socket endpoint.
+#
+# Required
+#
+endpoint = "unix:///var/run/docker.sock"
+
+# Default domain used.
+# Can be overridden by setting the "traefik.domain" label on a container.
+#
+# Required
+#
+domain = "localhost"
+
+# Enable watch docker changes
+#
+# Optional
+#
+watch = true
+
+# Override default configuration template. For advanced users :)
+#
+# Optional
+#
+# filename = "docker.tmpl"
+
+# Expose containers by default in traefik
+#
+# Optional
+# Default: true
+#
+exposedbydefault = false 
+
+# Enable docker TLS connection
+#
+# Optional
+#
+#  [docker.tls]
+#  ca = "/etc/ssl/ca.crt"
+#  cert = "/etc/ssl/docker.crt"
+#  key = "/etc/ssl/docker.key"
+#  insecureskipverify = true
+
+
+
+################################################################
+# Sample rules
+################################################################
+# [backends]
+#   [backends.backend1]
+#     [backends.backend1.circuitbreaker]
+#       expression = "NetworkErrorRatio() > 0.5"
+#     [backends.backend1.servers.server1]
+#     url = "http://172.17.0.2:80"
+#     weight = 10
+#     [backends.backend1.servers.server2]
+#     url = "http://172.17.0.3:80"
+#     weight = 1
+#   [backends.backend2]
+#     [backends.backend2.LoadBalancer]
+#       method = "drr"
+#     [backends.backend2.servers.server1]
+#     url = "http://172.17.0.4:80"
+#     weight = 1
+#     [backends.backend2.servers.server2]
+#     url = "http://172.17.0.5:80"
+#     weight = 2
+#
+# [frontends]
+#   [frontends.frontend1]
+#   backend = "backend2"
+#     [frontends.frontend1.routes.test_1]
+#     rule = "Host: test.localhost, other.localhost"
+#   [frontends.frontend2]
+#   backend = "backend1"
+#   passHostHeader = true
+#   entrypoints = ["https"] # overrides defaultEntryPoints
+#     [frontends.frontend2.routes.test_1]
+#     rule = "Host:{subdomain:[a-z]+}.localhost"
+#   [frontends.frontend3]
+#   entrypoints = ["http", "https"] # overrides defaultEntryPoints
+#   backend = "backend2"
+#     rule = "Path: /test, /other"
