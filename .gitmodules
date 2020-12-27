@@ -1,4 +1,0 @@
-[submodule "jupyter_ml_docker"]
-	path = jupyter_ml_docker
-	url = https://github.com/borundev/jupyter_ml_docker.git
-	branch = master
