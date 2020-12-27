@@ -37,7 +37,7 @@ services:
 
   tensorflow_and_pytorch:
     build:
-      context: tensorflow_and_pytorch
+      context: jupyter_ml_docker
     container_name: tensorflow_and_pytorch
     # ports:
     # Mapping ports should not be done if we do not want to expose the service to the internet
@@ -46,6 +46,7 @@ services:
     working_dir: /home/${NB_USER}
     volumes:
       - ${NOTEBOOKS_FOLDER}:/home/${NB_USER}
+      - ./jupyter_ml_docker/notebooks:/home/${NB_USER}/repository_notebooks
       - /etc/group:/etc/group:ro
       - /etc/passwd:/etc/passwd:ro
       - /etc/shadow:/etc/shadow:ro
@@ -61,7 +62,7 @@ services:
 
   tensorboard:
     build:
-      context: tensorflow_and_pytorch
+      context: jupyter_ml_docker
       #dockerfile: small_file_for_testing
     container_name: tensorboard
     user: $NB_UID:$NB_GID
@@ -74,7 +75,7 @@ services:
     #ports:
     # Mapping ports should not be done if we do not want to expose the service to the internet
     #  - 6006:8888
-    command: tensorboard --logdir=runs --port=8888 --bind_all --path_prefix=/tensorboard/
+    command: tensorboard --logdir=tensorboard/runs --port=8888 --bind_all --path_prefix=/tensorboard/
     ipc: host
     labels:
       - log.level=debug
