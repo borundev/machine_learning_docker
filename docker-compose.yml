@@ -46,6 +46,7 @@ services:
     working_dir: /home/${NB_USER}
     volumes:
       - ${NOTEBOOKS_FOLDER}:/home/${NB_USER}
+      - ./tensorflow_and_pytorch/notebooks:/home/${NB_USER}/repository_notebooks
       - /etc/group:/etc/group:ro
       - /etc/passwd:/etc/passwd:ro
       - /etc/shadow:/etc/shadow:ro
