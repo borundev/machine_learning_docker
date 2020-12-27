@@ -1,4 +1,0 @@
-tensorflow
-tensorflow-hub
-tensorboard==2.3.0
-wandb
