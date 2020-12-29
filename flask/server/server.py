@@ -19,6 +19,8 @@ imagenet_class_index=json.loads(response.content.decode('utf8'))
 model = models.densenet121(pretrained=True)
 model.eval()
 
+import os
+PATH_PREFIX = os.environ.get('path_prefix','').rstrip('/')
 
 def transform_image(image_bytes):
     my_transforms = transforms.Compose([transforms.Resize(255),
@@ -39,7 +41,7 @@ def get_prediction(image_bytes):
     return imagenet_class_index[predicted_idx]
 
 
-@app.route('/flask/predict', methods=['GET','POST'])
+@app.route(PATH_PREFIX+'/predict', methods=['GET','POST'])
 def predict():	
     print(request)
     if request.method == 'POST':
@@ -52,11 +54,12 @@ def predict():
 
 
 
-@app.route('/flask/')
+@app.route(PATH_PREFIX+'/')
 def hello_world():
     return 'Hey, we have Flask in a Docker container!'
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    print('Running with path prefix', PATH_PREFIX)
+    app.run(debug=os.environ.get('debug',False), host='0.0.0.0')
 
