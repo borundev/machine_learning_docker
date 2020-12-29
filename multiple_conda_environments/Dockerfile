@@ -6,7 +6,6 @@ RUN apt-get install -y wget
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda
 ENV PATH=$PATH:/miniconda/pcondabin:/miniconda/bin
-
 COPY packages packages
 
 RUN conda env update -f packages/environment.yml
@@ -24,13 +23,15 @@ RUN pip install -U -r packages/requirements_two.txt
 RUN rm -rf packages
 RUN rm Miniconda3-latest-Linux-x86_64.sh
 
+RUN mkdir -pv /etc/ipython/
+COPY ipython/ipython_config.py /etc/ipython/ipython_config.py
+
 ENV NB_USER feynman
 ENV NB_UID 1000
 
 RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER
 
-ENV HOME=/home/${NB_USER}
-WORKDIR $HOME
+WORKDIR /home/${NB_USER}
 USER $NB_USER
 
 SHELL ["/bin/bash","-c"]
@@ -39,4 +40,5 @@ RUN echo 'conda activate one' >> ~/.bashrc
 
 EXPOSE 8888
 COPY README.md README.md
+
 ENTRYPOINT ["jupyter", "notebook", "--no-browser","--ip=0.0.0.0","--NotebookApp.token=''","--NotebookApp.password=''"]
