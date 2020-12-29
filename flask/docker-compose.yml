@@ -13,8 +13,16 @@ services:
     expose:
       - 5000
     depends_on:
-      - redis
       - traefik
+    user: $NB_UID:$NB_GID
+    working_dir: /home/${NB_USER}
+    volumes:
+      - ./server:/home/${NB_USER}
+      - /etc/group:/etc/group:ro
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/shadow:/etc/shadow:ro
+    environment:
+      - path_prefix=/flask/
     labels:
       - traefik.enable=true
       - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/flask/
@@ -30,13 +38,13 @@ services:
     command: jupyter notebook --port=8888 --ip=0.0.0.0 --NotebookApp.base_url='flask_client' --NotebookApp.token='' --NotebookApp.password=''
     volumes:
       - ./client/home:/home/${NB_USER}
+      - /etc/group:/etc/group:ro
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/shadow:/etc/shadow:ro
     labels:
       - traefik.enable=true
       - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/flask_client/
       - traefik.frontend.auth.basic=${FLASK_HTTP_USER}:${FLASK_HTTP_AUTH_PASS_ENC}
 
-  redis:
-      image: redis
-      container_name: redis
 
 
