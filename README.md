@@ -1,7 +1,20 @@
 # machine_learning_docker
 
-In this repository I showcase a container that inherits from tensorflow and then I install conda and create a pytorch environment. I then rename the original kernel to Tensorflow and the new one is called PyTorch. The launched jupyter notebook then has two kernels one for tensorflow and one for pytorch. This project came about because I was installing both tensorflow and pytorch in the same environment but due to some change going from tensorflow v1 to v2 tensorboard was breaking. So the solution was to not install tensorflow in the environment which has pytorch.
+In this repository I showcase examples of using docker to make handling ML research and 
+production easier. As of writing there are three projects
 
-This turned out to be an instructive excercise because making docker and conda play with each other is a non-trivial excercise.
+## Flask
 
-For fun (and personal usecase) I also put these services behind trafik. While at it I also threw in a flask container just to showcase to myself how to handle path prefixes and exposed ports on a simple docker file written completely from scratch.
+I serve a pytorch based image classifier using flask. This is essentially the same code as in 
+[the official pytorch tutorial](https://pytorch.org/tutorials/intermediate/flask_rest_api_tutorial.html) 
+
+However, I also add a jupyter server running a notebook that access the above service. 
+Furthermore, both of these are in docker containers so running them is quite easy.
+
+## Multiple Jupyter Kernels in Docker
+
+There are two projects for this one. The first one called `multiple_conda_environments` is 
+simple and is meant as a tutorial. The second `jupter_ml_docker` is actually  useful Docker 
+image that contains tensorflow and pytorch kernels. The docker-compose file manages two 
+containers from this image - one running the jupyter notebook server with these two kernels and 
+the other running tensorboard.
