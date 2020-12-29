@@ -30,9 +30,6 @@ services:
       - traefik.enable=true
       - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/flask_client/
       - traefik.frontend.auth.basic=${FLASK_HTTP_USER}:${FLASK_HTTP_AUTH_PASS_ENC}
-    environment:
-      - user=${FLASK_HTTP_USER}
-      - password=${FLASK_HTTP_AUTH_PASS_ENC}
 
   redis:
       image: redis
