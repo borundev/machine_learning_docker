@@ -15,3 +15,24 @@ services:
       - traefik.frontend.auth.basic=${MULTI_CONDA_HTTP_USER}:${MULTI_CONDA_HTTP_AUTH_PASS_ENC}
     depends_on:
       - traefik
+
+  multiple_conda_environments_dev:
+    build:
+      context: .
+    #ports:
+    #  - 8888:8888
+    user: $NB_UID:$NB_GID
+    working_dir: /home/${NB_USER}
+    volumes:
+      - /home/borundev/multiple_conda_environments:/home/${NB_USER}
+      - /etc/group:/etc/group:ro
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/shadow:/etc/shadow:ro
+    command: "--NotebookApp.base_url='multiple_conda_environments'"
+    labels:
+      - log.level=debug
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/multiple_conda_environments/
+      - traefik.frontend.auth.basic=${MULTI_CONDA_HTTP_USER}:${MULTI_CONDA_HTTP_AUTH_PASS_ENC}
+    depends_on:
+      - traefik
