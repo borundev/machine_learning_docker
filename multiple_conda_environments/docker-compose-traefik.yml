@@ -4,7 +4,6 @@ services:
 
   traefik:
     image: traefik:1.7.18
-    container_name: traefik
     ports:
       - "80:80"
       - "443:443"
