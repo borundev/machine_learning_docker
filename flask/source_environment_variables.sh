@@ -1,3 +1,6 @@
+export NB_UID=$(id -u)
+export NB_GID=$(id -g)
+export NB_USER=$(whoami)
 export HOSTNAME=$(hostname)
 
 export FLASK_HTTP_USER=user
