@@ -1,5 +1,4 @@
 flask
-redis
+requests
 torch
 torchvision
-pytorch-lightning
