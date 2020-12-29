@@ -12,16 +12,6 @@ services:
       - log.level=debug
       - traefik.enable=true
       - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/multiple_conda_environments/
+      - traefik.frontend.auth.basic=${MULTI_CONDA_HTTP_USER}:${MULTI_CONDA_HTTP_AUTH_PASS_ENC}
     depends_on:
       - traefik
-
-  traefik:
-    image: library/traefik:1.7.18
-    ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
-    command: -d --web --web.address=:8080
-    volumes:
-      - ./traefik/traefik.toml:/etc/traefik/traefik.toml:ro
-      - /var/run/docker.sock:/var/run/docker.sock

@@ -1,0 +1,5 @@
+flask
+redis
+torch
+torchvision
+pytorch-lightning
