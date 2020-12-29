@@ -1,13 +1,14 @@
 #!/bin/bash
 
 COMPOSEFILES=" -f docker-compose.yml -f docker-compose-traefik.yml"
+SERVICES="multiple_conda_environments_dev"
 
 EXTRA="${@:2}"
 
 source source_environment_variables.sh
 
 up() {
-  docker-compose ${COMPOSEFILES} up -d ${EXTRA}
+  docker-compose ${COMPOSEFILES} up -d ${EXTRA} ${SERVICES}
 }
 
 down() {
@@ -15,11 +16,11 @@ down() {
 }
 
 start() {
-  docker-compose ${COMPOSEFILES} start ${EXTRA}
+  docker-compose ${COMPOSEFILES} start ${EXTRA} ${SERVICES}
 }
 
 stop() {
-  docker-compose ${COMPOSEFILES} stop ${EXTRA}
+  docker-compose ${COMPOSEFILES} stop ${EXTRA} ${SERVICES}
 }
 
 ps() {
@@ -27,7 +28,11 @@ ps() {
 }
 
 full() {
-  docker-compose ${COMPOSEFILES} ${EXTRA}
+  docker-compose ${COMPOSEFILES} ${EXTRA} ${SERVICES}
+}
+
+exec() {
+  docker-compose ${COMPOSEFILES} exec ${EXTRA}
 }
 
 case "$1" in
@@ -36,6 +41,6 @@ case "$1" in
     start) start;;
     stop) stop;;
     ps) ps;;
+    exec) ps;;
     full) full;;
 esac
-
