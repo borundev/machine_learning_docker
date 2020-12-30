@@ -1,3 +1,6 @@
 .ipynb_checkpoints
 .bash_history
 .cache
+.ipython
+.jupyter
+.local
