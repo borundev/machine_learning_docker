@@ -1,10 +1,11 @@
-version: '2'
+version: '3.8'
 
 services:
 
   multiple_conda_environments:
     build:
       context: .
+    init: true
     #ports:
     #  - 8888:8888
     command: "--NotebookApp.base_url='multiple_conda_environments'"
@@ -19,6 +20,7 @@ services:
   multiple_conda_environments_dev:
     build:
       context: .
+    init: true
     #ports:
     #  - 8888:8888
     user: $NB_UID:$NB_GID

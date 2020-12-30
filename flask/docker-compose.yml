@@ -1,4 +1,4 @@
-version: '2'
+version: '3.8'
 
 services:
 
@@ -32,6 +32,7 @@ services:
     build:
       context: client
       dockerfile: Dockerfile
+    init: true
     container_name: flask_client
     user: $NB_UID:$NB_GID
     working_dir: /home/${NB_USER}
