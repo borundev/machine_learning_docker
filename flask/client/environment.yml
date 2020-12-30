@@ -1,0 +1,9 @@
+name: base
+dependencies:
+  - matplotlib
+  - pillow
+  - numpy
+  - ipykernel
+  - jupyter
+
+

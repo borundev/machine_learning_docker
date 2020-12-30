@@ -1,20 +1,26 @@
-FROM jupyter/minimal-notebook
-RUN pip install -U pip
-ADD requirements.txt /home/jovyan
+FROM ubuntu:21.04
+RUN apt-get update
+RUN apt-get install -y git
+RUN apt-get install -y wget
 
-WORKDIR /home/jovyan
-RUN pip install -U -r requirements.txt
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda
+ENV PATH=$PATH:/miniconda/pcondabin:/miniconda/bin
+COPY environment.yml environment.yml
+RUN conda env update -f environment.yml
+RUN rm environment.yml
 
-ADD home/images /home/jovyan/images
-ADD home/Client.ipynb /home/jovyan
+RUN mkdir -pv /etc/ipython/
+COPY ipython/ipython_config.py /etc/ipython/ipython_config.py
 
-RUN rm requirements.txt
+ENV NB_USER feynman
+ENV NB_UID 1002
 
-USER root
-RUN chown -R jovyan:users /home/jovyan
-USER jovyan
+RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER
 
+WORKDIR /home/${NB_USER}
+USER $NB_USER
 
+EXPOSE 8888
 
-#ENTRYPOINT ["jupyter", "notebook", "--no-browser","--ip=0.0.0.0","--NotebookApp.token=''",
-#"--NotebookApp.password=''"]
+ENTRYPOINT ["jupyter", "notebook", "--no-browser","--ip=0.0.0.0","--NotebookApp.token=''", "--NotebookApp.password=''"]
