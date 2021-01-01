@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COMPOSEFILES=" -f docker-compose.yml -f docker-compose-traefik.yml"
+COMPOSEFILES=" -f docker-compose.yml"
 SERVICES="multiple_conda_environments_dev"
 
 EXTRA="${@:2}"

@@ -14,8 +14,8 @@ services:
       - traefik.enable=true
       - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/multiple_conda_environments/
       - traefik.frontend.auth.basic=${MULTI_CONDA_HTTP_USER}:${MULTI_CONDA_HTTP_AUTH_PASS_ENC}
-    depends_on:
-      - traefik
+    networks:
+      - traefik_default
 
   multiple_conda_environments_dev:
     build:
@@ -36,5 +36,10 @@ services:
       - traefik.enable=true
       - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/multiple_conda_environments/
       - traefik.frontend.auth.basic=${MULTI_CONDA_HTTP_USER}:${MULTI_CONDA_HTTP_AUTH_PASS_ENC}
-    depends_on:
-      - traefik
+    networks:
+      - traefik_default
+
+networks:
+  traefik_default:
+    external:
+      name: traefik_default

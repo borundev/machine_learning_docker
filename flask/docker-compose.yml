@@ -12,8 +12,6 @@ services:
     #  - 5000:5000
     expose:
       - 5000
-    depends_on:
-      - traefik
     user: $NB_UID:$NB_GID
     working_dir: /home/${NB_USER}
     volumes:
@@ -27,6 +25,8 @@ services:
       - traefik.enable=true
       - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/flask/
       - traefik.frontend.auth.basic=${FLASK_HTTP_USER}:${FLASK_HTTP_AUTH_PASS_ENC}
+    networks:
+      - traefik_default
 
   flask_client:
     build:
@@ -46,6 +46,12 @@ services:
       - traefik.enable=true
       - traefik.frontend.rule=Host:${HOSTNAME};PathPrefix:/flask_client/
       - traefik.frontend.auth.basic=${FLASK_HTTP_USER}:${FLASK_HTTP_AUTH_PASS_ENC}
+    networks:
+      - traefik_default
 
+networks:
+  traefik_default:
+    external:
+      name: traefik_default
 
 

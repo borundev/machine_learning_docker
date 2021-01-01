@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COMPOSEFILES=" -f docker-compose.yml -f docker-compose-traefik.yml"
+COMPOSEFILES=" -f docker-compose.yml"
 
 EXTRA="${@:2}"
 
