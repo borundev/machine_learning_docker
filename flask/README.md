@@ -4,7 +4,15 @@
 This is a dockerized version of [the official pytorch tutorial on deploying pytorch using Flask](https://pytorch.org/tutorials/intermediate/flask_rest_api_tutorial.html). 
 
 To run it check the hostname and traefik username and password in the file sourcing environment 
-variables and run `./run.sh up`. This will start a flask server running a pretrained image 
+variables and source it followed by docker-compose up
+```bash
+source source_environment_variables.sh
+bash run_traefik.sh
+docker-compose up -d
+```
+If you get an error saying `docker network create traefik` you need to run
+
+This will start a flask server running a pretrained image 
 classifier and a jupyter notebook that can act as a client to test the server.
 
 To run the notebook go to `https://hostname/flask_client/` and open and run `Client.ipynb`.

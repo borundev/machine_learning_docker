@@ -42,4 +42,4 @@ services:
 networks:
   traefik_default:
     external:
-      name: traefik_default
+      name: traefik

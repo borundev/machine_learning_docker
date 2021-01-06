@@ -42,3 +42,13 @@ command
 command: "--NotebookApp.base_url='multiple_conda_environments'"
 ```
 
+## Usage:
+
+Check the values of the variables in `source_environment_variables.sh` and run
+```bash
+source source_environment_variables.sh
+docker-compose -f ../traefik/docker-compose.yml up -d
+docker-compose up -d
+```
+
+
